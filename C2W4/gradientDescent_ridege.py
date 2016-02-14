@@ -119,6 +119,26 @@ def main():
 
   simple_weights_0_penalty = rr.ridge_regression_gradient_descent(
       simple_feature, output, initial_weights, step_size, 0, max_iterations)
+  #print simple_weights_0_penalty
+  
+  simple_weights_high_penalty = rr.ridge_regression_gradient_descent(
+      simple_feature, output, initial_weights, step_size, 1e11, max_iterations)
+  #print simple_weights_high_penalty
+  
+ 
+  features = ["sqft_living", "sqft_living15"]
+  predictor = "price"
+  step_size = 1e-12
+  max_iterations = 1000
+  initial_weights = np.zeros(len(features) + 1)
+
+  simple_feature, output = rr.Prep_FeatureMatrix_OutputVec(
+      "kc_house_train_data.csv", features, predictor)
+  simple_test_feature, test_output = rr.Prep_FeatureMatrix_OutputVec(
+      "kc_house_test_data.csv", features, predictor)
+
+  simple_weights_0_penalty = rr.ridge_regression_gradient_descent(
+      simple_feature, output, initial_weights, step_size, 0, max_iterations)
   print simple_weights_0_penalty
   
   simple_weights_high_penalty = rr.ridge_regression_gradient_descent(
