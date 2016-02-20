@@ -51,7 +51,9 @@ class knnRegression:
     return distances
     
   def k_nearest_neighbors(self, k, feature_train, features_query):
-    pass
+    distances = self.compute_distances(features_query, feature_train)
+    sorted_d_index = np.argsort(distances)
+    return sorted_d_index
 
 
 knn = knnRegression()
@@ -85,3 +87,8 @@ euclid = knn.compute_distances(queryHouse, features_train.as_matrix())
 oneNN_distance = min(euclid)
 oneNN = np.where(euclid == oneNN_distance)
 print predictor_output[382]
+
+print "\n\nKNN REGRESSION\n\n"
+knn_index = knn.k_nearest_neighbors(4, features_train.as_matrix(), queryHouse)
+knn_values = predictor_output[knn_index]
+print np.mean(knn_values[0:4,])
