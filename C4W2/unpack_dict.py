@@ -14,20 +14,27 @@ def load_sparse_csr(filename):
     
 
 def unpack_dict(sparse_matrix, sframe_lookup):
-    table = list(sframe_lookup.sort('index')['category'])
-    data = sparse_matrix.data
-    indices = sparse_matrix.indices
-    indptr = sparse_matrix.indptr
+    # 'category' column from sframe sorted on 'index', converted to python list
+    # 'category' is essentially the word list from the entire corpus
+    lookup_list = list(sframe_lookup.sort('index')['category'])
+    
+    nonZeroValues = sparse_matrix.data
+    nonZeroRows = sparse_matrix.indices # CSR format
+    nonZeroCols = sparse_matrix.indptr  # CSR format
     
     num_row = sparse_matrix.shape[0] # number of rows
 
     return [
-            { k : v for k, v in zip(
-                [ table[word_id] for word_id in indices[ indptr[i] : indptr[i+1] ] ],
-                data[ indptr[i] : indptr[i+1] ].tolist()
+            { k : v for k, v in zip (
+                # for each word_id in sparse matrix, use it as index to access list of 'category' (lookup_list)
+                [lookup_list[word_id] for word_id in nonZeroRows[ nonZeroCols[i] : nonZeroCols[i+1] ]], # key
+                
+                # get all data (cell values) in sparse matrix, convert to a python list
+                nonZeroValues[ nonZeroCols[i] : nonZeroCols[i+1] ].tolist()                             # value
             )}
             for i in xrange(num_row)
            ]
+
 
 # Tests -
 def unitTest():
@@ -69,4 +76,4 @@ def unitTest():
                                                     len(non_0_col_indices_given_row_1_3) )
 
 
-unitTest()
+#unitTest()
